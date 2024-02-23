@@ -264,7 +264,7 @@ class Linear(nn.Linear, LoraLayer):
             ### YOUR CODE HERE ###
             self.weight.data += (
               transpose(
-                self.lora_B[self.active_adapter] @ self.lora_A[self.active_adapter], True
+                self.lora_B[self.active_adapter].weight.data @ self.lora_A[self.active_adapter].weight.data, True
               ) * self.scaling[self.active_adapter]
             )
             
@@ -306,7 +306,7 @@ class Linear(nn.Linear, LoraLayer):
             # LoRA scaling factor and added to the result.
             
             ### YOUR CODE HERE ###
-            result += None
+            result += self.lora_B[self.active_adapter](self.lora_dropout[self.active_adapter](self.lora_A[self.active_adapter](x))) * self.scaling[self.active_adapter]
         
         else:
             result = F.linear(x, transpose(self.weight, self.fan_in_fan_out), bias=self.bias)
