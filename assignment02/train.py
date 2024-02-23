@@ -347,7 +347,7 @@ def load_pretrained_model(local_rank, model_path: str = ""):
 
     lora_config = LoraConfig(
       r=4,
-      local_alpha=8,
+      lora_alpha=8,
       lora_dropout=0.05,
       bias="none",
       task_type="CAUSAL_LM",
@@ -357,7 +357,7 @@ def load_pretrained_model(local_rank, model_path: str = ""):
 
     # TODO: Create LoRA model
 
-    model = LoraModelForCasualLM.from_pretrained(lora_config)  # Apply current model to Lora Model
+    model = LoraModelForCasualLM(model, lora_config)  # Apply current model to Lora Model
 
     if _is_master_process():
         model.print_trainable_parameters()
