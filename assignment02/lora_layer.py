@@ -262,10 +262,14 @@ class Linear(nn.Linear, LoraLayer):
             # flag to True.
             
             ### YOUR CODE HERE ###
-            self.weight.data += None
+            self.weight.data += (
+              transpose(
+                self.lora_B[self.active_adapter] @ self.lora_A[self.active_adapter], True
+              ) * self.scaling[self.active_adapter]
+            )
             
             ### YOUR CODE HERE ###
-            self.merged = None
+            self.merged = True
 
     def unmerge(self):
         # Separate low-rank approximation from original weights
