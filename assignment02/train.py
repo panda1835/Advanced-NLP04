@@ -198,7 +198,21 @@ class Trainer:
 
         ### YOUR CODE HERE ###
 
-        data_trainloader = None
+        if self.is_ddp_training:
+          sampler = DistributedSampler(train_dataset)
+        else:
+          sampler = None
+        data_trainloader = DataLoader(
+          train_dataset,
+          sampler=sampler,
+          batch_size=self.batch_size,
+          collate_fn=DataCollatorForSeq2Seq(
+            tokenizer=self.tokenizer,
+            padding=True,
+            pad_to_multiple_of=8,
+            return_tensors='pt'),
+          drop_last=True
+        )
 
         # TODO: Prepare the evaluation DataLoader. Initialize 'DataLoader' with 'eval_dataset',
         # the appropriate 'batch_size', and 'SequentialSampler' for 'sampler'.
@@ -207,7 +221,17 @@ class Trainer:
 
         ### YOUR CODE HERE ###
 
-        data_testloader = None
+        data_testloader = DataLoader(
+          eval_dataset,
+          sampler=SequentialSampler(eval_dataset),
+          batch_size=self.batch_size,
+          collate_fn=DataCollatorForSeq2Seq(
+            tokenizer=self.tokenizer,
+            padding=True,
+            pad_to_multiple_of=8,
+            return_tensors='pt'),
+          drop_last=True
+        )
 
         return data_trainloader, data_testloader
 
