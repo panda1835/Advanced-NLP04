@@ -91,7 +91,7 @@ class Trainer:
 
         ### YOUR CODE HERE ###
 
-        self.model = None
+        self.model = DDP(self.model, device_ids=[self.gpu_id], output_device=self.gpu_id)
 
     def _run_batch(self, batch):
         """
@@ -164,7 +164,7 @@ class Trainer:
                     self.gradscaler.step(self.optimizer)
                     # TODO: update scaler factor
                     self.gradscaler.update()
-                    pass
+                    
                 else:
                     self.optimizer.step()
                 self.optimizer.zero_grad()
@@ -402,8 +402,10 @@ if __name__ == "__main__":
         # Initialize the process group
 
         ### YOUR CODE HERE ###
+        init_process_group(backend=backend)
+        # Get the DDP local rank
+        local_rank = int(os.environ['LOCAL_RANK'])
         
-        pass
     else:
         os.environ['RANK'] = '0'
         local_rank = 0
